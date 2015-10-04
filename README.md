@@ -4,4 +4,4 @@
 Scientists should spend more time conducting experiments and less time repeating the same analyses with identical documentation.
 
 ###The solution
-This is an R Markdown document that will demonstrate the utility of this style of reactive documentation for quality control at Oxitec.
+This is an R Markdown document that will demonstrate the utility of this style of reactive documentation for quality control at your company.

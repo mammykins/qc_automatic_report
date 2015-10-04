@@ -1,0 +1,72 @@
+---
+title: "qc_test"
+author: "Matthew Gregory"
+date: "Thursday, September 17, 2015"
+output: html_document
+---
+
+```{r, echo=FALSE, warning=FALSE}
+library("drc") #check you have these libraries installed in R
+library("dplyr")
+
+```
+
+# Problem
+Scientists should spend more time conducting experiments and less time repeating the same analyses with identical documentation.
+
+## The solution
+This is an R Markdown document that will demonstrate the utility of this style of reactive documentation for quality control at Oxitec.
+
+## The data
+Routine quality control experiments are designed to be consistent, facilitating comparison between, statistics through time. A tidy dataframe should be used to store the data facilitating automation.    
+The data for an on/off tet experiment might look like this:
+
+```{r, echo = FALSE}
+#INPUT
+setwd("C://Users//mammykins//Google Drive//R//phd//other")
+mydata <- read.csv("qc_test.csv", header = TRUE)
+mydata <- select(mydata, dose, male, female)
+head(mydata)
+```
+
+We can look at the data and check it has been entered correctly. We can let the scientist apply a manual check or automate the process to confirm the data does not look suspicious.
+
+```{r, echo=TRUE}
+summary(mydata)
+
+```
+
+Given the data we typically need some summary statistics and a graphic to help us visualise what is going on. Rather than creating a seperate Excel worksheet we can create a new object in R to hold our data. We are interested in the female ratio or female fraction of the total, *FemFract*. We then rename the columns to match that of the original analysis code written by Kelly Matzen.
+
+```{r, echo=TRUE}
+
+FemFract <- aggregate(female/male~dose, data=mydata, FUN=mean)
+colnames(FemFract)[1] <- "Dose_ug"
+colnames(FemFract)[2] <- "FemRatio"
+
+```
+
+We can print it to check it looks OK.
+```{r, echo=TRUE}
+FemFract
+```
+Now for the analysis, notice how reproducible this is, we can set `echo = TRUE`. This is important for the `fct` argument in the `drm` function.
+
+```{r, echo=TRUE}
+#ANALYSIS
+FitDRC <- drm(FemRatio ~ Dose_ug, data = FemFract, fct = LL.2())
+LD50 <- ED(FitDRC,c(50),interval="delta")
+```
+We are interested in the LD50 and standard error.  
+We can produce an informatic graphic to summarise.
+```{r, echo=FALSE}
+plot(FitDRC,broken=TRUE, pch = 19, axes = FALSE, ylab = "Female to Male Ratio", xlab = "Dose (ug)", yaxt="n")
+axis(side = 1, at = c(0, 0.1, 1, 10, 100))
+axis(side = 2, at = c(0, 5, 10, 15, 20, 25), labels = c(0, 20, 40, 60, 80, 100))
+```
+  
+We can finish by describing what version of R we were running and the packages that were loaded.  
+
+```{r}
+sessionInfo()
+```

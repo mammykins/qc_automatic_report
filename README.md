@@ -8,4 +8,4 @@
 This is an R Markdown document that will demonstrate the utility of this style of reactive documentation for quality control at your company.
 
 ###See example  
-Download the **html** file and open it in your browser. This is the output of the **Rmd** script.
+Download the **html** file and open it in your browser. This is the output of the **Rmd** script including summary graphics and the LC50 statistic.
